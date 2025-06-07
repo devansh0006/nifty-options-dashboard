@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIFTY Options Analytics | Elite Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>NIFTY Analytics</span>
+                </div>
+                <button class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Market Analysis</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-bell"></i>
+                            <span>Alerts</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <span class="username">Admin User</span>
+                        <span class="user-role">Premium Member</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Header Bar -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1>Options Dashboard</h1>
+                    <div class="breadcrumbs">
+                        <span>Analytics</span>
+                        <i class="fas fa-chevron-right"></i>
+                        <span>NIFTY Options</span>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search...">
+                    </div>
+                    <div class="header-actions">
+                        <button class="btn-icon">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge">3</span>
+                        </button>
+                        <button class="btn-icon">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Stats Cards -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #6366f120; color: #6366f1;">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-title">Total Records</span>
+                        <h3 class="stat-value">{{ stats.num_records | format_number }}</h3>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>12.5%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #10b98120; color: #10b981;">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-title">Unique Symbols</span>
+                        <h3 class="stat-value">{{ stats.symbols }}</h3>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>5.2%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #3b82f620; color: #3b82f6;">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-title">Avg Volume</span>
+                        <h3 class="stat-value">{{ stats.avg_volume | format_number }}</h3>
+                    </div>
+                    <div class="stat-trend negative">
+                        <i class="fas fa-arrow-down"></i>
+                        <span>3.8%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background-color: #8b5cf620; color: #8b5cf6;">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-title">Avg Open Interest</span>
+                        <h3 class="stat-value">{{ stats.avg_oi | format_number }}</h3>
+                    </div>
+                    <div class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>8.1%</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Charts Section -->
+            <section class="charts-section">
+                <!-- Price Analysis Card -->
+                <div class="chart-card wide">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-line"></i> Price Trend Analysis</h2>
+                        <div class="chart-controls">
+                            <select id="symbol-selector" class="select-control">
+                                {% for symbol in symbols %}
+                                <option value="{{ symbol }}">{{ symbol }}</option>
+                                {% endfor %}
+                            </select>
+                            <button class="btn-control active">1D</button>
+                            <button class="btn-control">1W</button>
+                            <button class="btn-control">1M</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <img id="timeseries-chart" src="data:image/png;base64,{{ plots.timeseries }}" alt="Price Trend">
+                    </div>
+                </div>
+                
+                <!-- Distribution Card -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-pie"></i> Returns Distribution</h2>
+                        <div class="chart-actions">
+                            <button class="btn-icon">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <img src="data:image/png;base64,{{ plots.returns }}" alt="Returns Distribution">
+                    </div>
+                </div>
+                
+                <!-- Volume vs OI Card -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-chart-scatter"></i> Volume vs OI</h2>
+                        <div class="chart-actions">
+                            <button class="btn-icon">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <img src="data:image/png;base64,{{ plots.volume_oi }}" alt="Volume vs OI">
+                    </div>
+                </div>
+                
+                <!-- Correlation Matrix Card -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2><i class="fas fa-project-diagram"></i> Correlation Matrix</h2>
+                        <div class="chart-actions">
+                            <button class="btn-icon">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <img src="data:image/png;base64,{{ plots.correlation }}" alt="Correlation Matrix">
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Additional Data Section -->
+            <section class="data-section">
+                <div class="data-card">
+                    <div class="data-header">
+                        <h2><i class="fas fa-table"></i> Key Metrics</h2>
+                        <button class="btn-text">
+                            View All <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="metrics-grid">
+                        <div class="metric-item">
+                            <span class="metric-label">Current Close</span>
+                            <span class="metric-value">{{ stats.last_close }}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">All-Time High</span>
+                            <span class="metric-value">{{ stats.max_close }}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">All-Time Low</span>
+                            <span class="metric-value">{{ stats.min_close }}</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-label">Date Range</span>
+                            <span class="metric-value">{{ stats.start_date }} - {{ stats.end_date }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="data-card">
+                    <div class="data-header">
+                        <h2><i class="fas fa-bell"></i> Recent Alerts</h2>
+                        <button class="btn-text">
+                            View All <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="alerts-list">
+                        <div class="alert-item">
+                            <div class="alert-icon info">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <p>Unusual volume detected in NIFTY 20SEP2024 20000 CE</p>
+                                <span class="alert-time">2 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <p>Price approaching resistance level in NIFTY 20SEP2024 19800 PE</p>
+                                <span class="alert-time">5 hours ago</span>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <div class="alert-icon success">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="alert-content">
+                                <p>New high OI recorded in NIFTY 20SEP2024 19900 CE</p>
+                                <span class="alert-time">Yesterday</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/main.js"></script>
+</body>
+</html>
